@@ -10,7 +10,12 @@
     "default_popup": "popup.html",
     "default_title" : "Tab-Control"
   },
+
+  "background": {
+    "scripts": ["js/background.js", "js/lib/jquery-1.11.3.min.js"]
+  }
   "permissions": [
+    "tabs",
     "activeTab",
     "https://ajax.googleapis.com/"
   ]
