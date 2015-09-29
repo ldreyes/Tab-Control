@@ -3,7 +3,7 @@ function getTabs(queryInfo, callback){
 
     for (index in tabs){
       console.log(tabs[index].title);
-      document.getElementById("list").innerHTML += tabs[index].title + "\n";
+      document.getElementById("list").innerHTML += ("* " + tabs[index].title + "<br>");
     }
     callback();
   });
