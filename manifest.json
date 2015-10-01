@@ -10,10 +10,6 @@
     "default_popup": "popup.html",
     "default_title" : "Tab-Control"
   },
-
-  "background": {
-    "scripts": ["js/lib/jquery-1.11.3.min.js"]
-  },
   "permissions": [
     "tabs",
     "activeTab",
