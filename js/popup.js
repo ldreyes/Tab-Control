@@ -14,7 +14,7 @@ function getTabs(queryInfo, callback){
       console.log(tabs[index].title);
 
       var listElement = document.createElement('li');
-      listElement.appendChild(document.createTextNode(strimString(tabs[index].title, 20)));
+      listElement.appendChild(document.createTextNode(strimString(tabs[index].title, 40)));
       listElement.setAttribute('id', index);
       list.appendChild(listElement);
     }
