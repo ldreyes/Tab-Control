@@ -6,7 +6,7 @@ function strimString(string, length){
 }
 
 
-function getTabs(queryInfo, callback){
+function fillTabList(queryInfo, callback){
   chrome.tabs.query(queryInfo, function (tabs){
 
     var list = document.getElementById('list');
@@ -28,7 +28,7 @@ function getTabs(queryInfo, callback){
 }
 
 document.addEventListener('DOMContentLoaded', function(){
-  getTabs({}, function(){
+  fillTabList({}, function(){
     console.log("All tabs loaded");
   });
 });
@@ -39,3 +39,11 @@ var l = document.getElementById('list');
 l.addEventListener('click', function(event){
   chrome.tabs.highlight({ 'tabs' : parseInt(event.target.id) }, function(window){});
 });
+
+
+//Filter tabs by the users text
+function filterTabList(e){
+  chrome.tabs.query({}, function (tabs){
+
+  });
+}
