@@ -16,7 +16,12 @@ function getTabs(queryInfo, callback){
       var listElement = document.createElement('li');
       listElement.appendChild(document.createTextNode(strimString(tabs[index].title, 40)));
       listElement.setAttribute('id', index);
-      list.appendChild(listElement);
+      
+      var div = document.createElement('div');
+      div.setAttribute('class', 'tab_el')
+
+      div.appendChild(listElement);
+      list.appendChild(div);
     }
     callback();
   });
