@@ -10,7 +10,7 @@ ul {
 }
 
 li {
-	padding: 5px 0px 5px 20px;
+	padding: 3px 0px 3px 20px;
 }
 
 div.tab_info {
@@ -20,9 +20,20 @@ div.tab_info {
 div.tab_el:hover {
 	width: 100%;
 	background-color: #FFFF66;
-	box-shadow: inset 0 0 2px grey;
+	box-shadow: inset 0 0 2px #808080;
 }
 
 #title  {
+	-webkit-box-shadow: 0 4px 4px -2px #000000;
+   	-moz-box-shadow: 0 4px 4px -2px #000000;
+    box-shadow: 0 4px 4px -2px #000000;
 	text-align: center;
+	background-color: #CCFF99;
+}
+
+#searchInput {
+	width: 100%;
+	display: table-cell;
+	border-radius: 10px;
+	outline: none;
 }
