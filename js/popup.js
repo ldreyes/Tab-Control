@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function(){
 //TODO: fix to work when tabs are in another window
 var l = document.getElementById('list');
 l.addEventListener('click', function(event){
-  chrome.tabs.highlight({ 'tabs' : parseInt(event.target.id) }, function(window){});
+  chrome.tabs.highlight({ 'tabs' : parseInt(event.target.id) });
 });
 
 
