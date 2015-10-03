@@ -1,3 +1,5 @@
+var tabListNum = 0;
+var focusedTabId = 0;
 function strimString(string, length){
   if(string.length > length) {
     return string.substring(0,length-1)+"...";
@@ -5,18 +7,24 @@ function strimString(string, length){
   return string;
 }
 
+function resetFocus(tabNum){
+  tabListNum = tabNum;
+  focusedTabId = 0;
+  document.getElementById(focusedTabId).setAttribute('class','selected');
+}
+
 function createListElement( title, index, windowId ) {
-      var listElement = document.createElement('li');
-      listElement.appendChild(document.createTextNode(strimString(title, 40)));
-      listElement.setAttribute('id', index);
-      listElement.setAttribute('data-tab-id', index);
-      listElement.setAttribute('data-window-id', windowId);
+  var listElement = document.createElement('li');
+  listElement.appendChild(document.createTextNode(strimString(title, 40)));
+  listElement.setAttribute('data-tab-id', index);
+  listElement.setAttribute('data-window-id', windowId);
 
-      var div = document.createElement('div');
-      div.setAttribute('class', 'tab_el')
+  var div = document.createElement('div');
+  div.setAttribute('id', index);
+  div.setAttribute('class', 'tab_el')
 
-      div.appendChild(listElement);
-      return div;
+  div.appendChild(listElement);
+  return div;
 }
 
 function fillTabList(queryInfo, callback){
@@ -26,29 +34,9 @@ function fillTabList(queryInfo, callback){
       list.appendChild(createListElement(strimString(tabs[index].title), index, tabs[index].windowId));
     }
     callback();
+    resetFocus(tabs.length);
   });
 }
-// ============ KEY SHORTCUTS ================
-
-$(window).keydown(function(e){
-  var li = $('li');
-  if(e.which === 40){
-    liSelected = li.eq(0).addClass('selected');
-  }
-  else if(e.which === 38){
-        if(liSelected){
-            liSelected.removeClass('selected');
-            next = liSelected.prev();
-            if(next.length > 0){
-                liSelected = next.addClass('selected');
-            }else{
-                liSelected = li.last().addClass('selected');
-            }
-        }else{
-            liSelected = li.last().addClass('selected');
-        }
-    }
-});
 
 //========================= EVENT LISTENERS =====================================
 
@@ -56,6 +44,27 @@ document.addEventListener('DOMContentLoaded', function(){
   fillTabList({}, function(){
     console.log("All tabs loaded");
   });
+});
+
+document.addEventListener('keydown', function(e){
+  // down
+  if(e.which === 40){
+    document.getElementById(focusedTabId).setAttribute('class','tab_el');
+    focusedTabId++;
+    if(focusedTabId >= tabListNum){
+      focusedTabId = 0;
+    }
+    document.getElementById(focusedTabId).setAttribute('class','selected');
+  }
+  // up 
+  else if(e.which === 38){
+    document.getElementById(focusedTabId).setAttribute('class','tab_el');
+    focusedTabId--;
+    if(focusedTabId < 0){
+      focusedTabId = tabListNum - 1;
+    }
+    document.getElementById(focusedTabId).setAttribute('class','selected');
+  }
 });
 
 //Navigates to the tab that the user clicks
@@ -71,6 +80,10 @@ document.getElementById('list').addEventListener('click', function(event){
 
 //Filter tabs by the users text
 document.getElementById('searchInput').addEventListener('keyup', function(e){
+    if(e.which === 40 || e.which === 38){
+      console.log("up or down");
+      return;
+    }
     var inBox = this;
     chrome.tabs.query( {}, function ( tabs ) {
         //Search for the tab indexes given the text
@@ -80,7 +93,7 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
                 foundTabs.push(index);
             }
         }
-
+        resetFocus(foundTabs.length);
         //console.log(foundTabs);
 
         //Display the new list
