@@ -86,9 +86,15 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
       console.log("up or down");
       return;
     }
-    //enter key
+    //enter key -> navigate to tab
     if(e.which === 13){
       console.log("enter");
+      var list = document.getElementById(focusedTabId);
+      chrome.windows.update(parseInt(list.getAttribute("data-window-id")), {'focused':true});
+      chrome.tabs.highlight({ 
+        'tabs' : parseInt(list.getAttribute("data-tab-id")),
+        'windowId' :  parseInt(list.getAttribute("data-window-id"))});
+      return;
     }
     var inBox = this;
     chrome.tabs.query( {}, function ( tabs ) {
