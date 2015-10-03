@@ -5,10 +5,12 @@ function strimString(string, length){
   return string;
 }
 
-function createListElement( title, index ) {
+function createListElement( title, index, windowId ) {
       var listElement = document.createElement('li');
       listElement.appendChild(document.createTextNode(strimString(title, 40)));
       listElement.setAttribute('id', index);
+      listElement.setAttribute('data-tab-id', index);
+      listElement.setAttribute('data-window-id', windowId);
 
       var div = document.createElement('div');
       div.setAttribute('class', 'tab_el')
@@ -23,8 +25,9 @@ function fillTabList(queryInfo, callback){
     var list = document.getElementById('list');
     for (index in tabs){
       console.log(tabs[index].title);
-
-      list.appendChild(createListElement(strimString(tabs[index].title), index));
+      console.log(tabs[index].windowId);
+ 
+      list.appendChild(createListElement(strimString(tabs[index].title), index, tabs[index].windowId));
     }
     callback();
   });
@@ -37,9 +40,15 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 //Navigates to the tab that the user clicks
-//TODO: fix to work when tabs are in another window
 document.getElementById('list').addEventListener('click', function(event){
-  chrome.tabs.highlight({ 'tabs' : parseInt(event.target.id) });
+  console.log(event);
+  var list = document.getElementById(event.target.id);
+  console.log(list);
+  // TODO: do not call update if the target window is the same 
+  chrome.windows.update(parseInt(list.getAttribute("data-window-id")), {'focused':true});
+  chrome.tabs.highlight({ 
+    'tabs' : parseInt(list.getAttribute("data-tab-id")),
+    'windowId' :  parseInt(list.getAttribute("data-window-id"))});
 });
 
 
