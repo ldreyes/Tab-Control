@@ -1,5 +1,6 @@
 var tabListNum = 0;
 var focusedTabId = 0;
+var activeTabs;
 function strimString(string, length){
   if(string.length > length) {
     return string.substring(0,length-1)+"...";
@@ -16,11 +17,12 @@ function resetFocus(tabNum){
 function createListElement( title, index, windowId ) {
   var listElement = document.createElement('li');
   listElement.appendChild(document.createTextNode(strimString(title, 40)));
-  listElement.setAttribute('data-tab-id', index);
-  listElement.setAttribute('data-window-id', windowId);
+  listElement.setAttribute('id', "Tab" + index);
 
   var div = document.createElement('div');
   div.setAttribute('id', index);
+  div.setAttribute('data-tab-id', index);
+  div.setAttribute('data-window-id', windowId);
   div.setAttribute('class', 'tab_el')
 
   div.appendChild(listElement);
@@ -69,7 +71,7 @@ document.addEventListener('keydown', function(e){
 
 //Navigates to the tab that the user clicks
 document.getElementById('list').addEventListener('click', function(event){
-  var list = document.getElementById(event.target.id);
+  var list = document.getElementById(event.target.id.substring(3));
   // TODO: do not call update if the target window is the same 
   chrome.windows.update(parseInt(list.getAttribute("data-window-id")), {'focused':true});
   chrome.tabs.highlight({ 
@@ -83,6 +85,10 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
     if(e.which === 40 || e.which === 38){
       console.log("up or down");
       return;
+    }
+    //enter key
+    if(e.which === 13){
+      console.log("enter");
     }
     var inBox = this;
     chrome.tabs.query( {}, function ( tabs ) {
