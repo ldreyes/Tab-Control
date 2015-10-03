@@ -43,4 +43,5 @@ div.tab_el:hover {
 	display: table-cell;
 	border-radius: 10px;
 	outline: none;
+	padding: 5px;
 }
