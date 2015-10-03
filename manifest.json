@@ -10,15 +10,6 @@
     "default_popup": "popup.html",
     "default_title" : "Tab-Control"
   },
-
-  "commands": {
-          "toggle-preview": {
-            "suggested_key": {
-              "default": "Ctrl+Shift+Y",
-              "mac": "Command+Shift+Y"
-            },
-            "description": "Toggle feature foo"
-          },
   "permissions": [
     "tabs",
     "activeTab",

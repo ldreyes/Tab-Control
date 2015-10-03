@@ -21,17 +21,36 @@ function createListElement( title, index, windowId ) {
 
 function fillTabList(queryInfo, callback){
   chrome.tabs.query(queryInfo, function (tabs){
-
     var list = document.getElementById('list');
     for (index in tabs){
-      console.log(tabs[index].title);
-      console.log(tabs[index].windowId);
- 
       list.appendChild(createListElement(strimString(tabs[index].title), index, tabs[index].windowId));
     }
     callback();
   });
 }
+// ============ KEY SHORTCUTS ================
+
+$(window).keydown(function(e){
+  var li = $('li');
+  if(e.which === 40){
+    liSelected = li.eq(0).addClass('selected');
+  }
+  else if(e.which === 38){
+        if(liSelected){
+            liSelected.removeClass('selected');
+            next = liSelected.prev();
+            if(next.length > 0){
+                liSelected = next.addClass('selected');
+            }else{
+                liSelected = li.last().addClass('selected');
+            }
+        }else{
+            liSelected = li.last().addClass('selected');
+        }
+    }
+});
+
+//========================= EVENT LISTENERS =====================================
 
 document.addEventListener('DOMContentLoaded', function(){
   fillTabList({}, function(){
@@ -41,9 +60,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 //Navigates to the tab that the user clicks
 document.getElementById('list').addEventListener('click', function(event){
-  console.log(event);
   var list = document.getElementById(event.target.id);
-  console.log(list);
   // TODO: do not call update if the target window is the same 
   chrome.windows.update(parseInt(list.getAttribute("data-window-id")), {'focused':true});
   chrome.tabs.highlight({ 
@@ -64,7 +81,7 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
             }
         }
 
-        console.log(foundTabs);
+        //console.log(foundTabs);
 
         //Display the new list
         list = document.getElementById('list');
@@ -72,7 +89,7 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
         if(foundTabs.length > 0){
             for(index in foundTabs){
                 console.log(index, tabs[index].title);
-                list.appendChild(createListElement(tabs[foundTabs[index]].title, foundTabs[index]));
+                list.appendChild(createListElement(tabs[foundTabs[index]].title, foundTabs[index], tabs[index].windowId));
             }
         }else {
             list.appendChild(createListElement("No tabs found."), -1);
