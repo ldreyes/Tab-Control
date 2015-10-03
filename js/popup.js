@@ -9,7 +9,12 @@ function createListElement( title, index ) {
       var listElement = document.createElement('li');
       listElement.appendChild(document.createTextNode(strimString(title, 40)));
       listElement.setAttribute('id', index);
-      return listElement;
+
+      var div = document.createElement('div');
+      div.setAttribute('class', 'tab_el')
+
+      div.appendChild(listElement);
+      return div;
 }
 
 function fillTabList(queryInfo, callback){
@@ -18,12 +23,8 @@ function fillTabList(queryInfo, callback){
     var list = document.getElementById('list');
     for (index in tabs){
       console.log(tabs[index].title);
-      
-      var div = document.createElement('div');
-      div.setAttribute('class', 'tab_el')
 
-      div.appendChild(createListElement(strimString(tabs[index].title), index));
-      list.appendChild(div);
+      list.appendChild(createListElement(strimString(tabs[index].title), index));
     }
     callback();
   });
