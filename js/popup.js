@@ -142,12 +142,13 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
                     imgSrc: tabs[foundTabs[index]].favIconUrl
                   }));
             }
+             resetFocus(foundTabs.length);
         }else {
             list.appendChild(createListElement(-1, {
               title: "No tabs found."}
               ));
         }
-        resetFocus(foundTabs.length);
+
 
     });
 });
