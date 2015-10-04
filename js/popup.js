@@ -54,7 +54,6 @@ function fillTabList(queryInfo, callback){
 }
 
 function focusTab (id){
-  console.log(id);
   var name = id;
   if(id.indexOf("Tab") === -1){
     name = "Tab"+id;
@@ -138,7 +137,7 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
                 list.appendChild(createListElement(index,
                   {
                     title: tabs[foundTabs[index]].title,
-                    index: foundTabs[index].index,
+                    index: foundTabs[index],
                     windowId: tabs[index].windowId,
                     imgSrc: tabs[index].favIconUrl
                   }));
