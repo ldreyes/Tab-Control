@@ -14,17 +14,28 @@ function resetFocus(tabNum){
   document.getElementById(focusedTabId).setAttribute('class','selected');
 }
 
-function createListElement( title, index, windowId ) {
+function createListElement( title, index, windowId, imgSrc) {
   var listElement = document.createElement('li');
   listElement.appendChild(document.createTextNode(strimString(title, 40)));
   listElement.setAttribute('id', "Tab" + index);
+
+  var img = document.createElement('img');
+  if(imgSrc == undefined){
+    img.setAttribute('src', '/img/paper.jpg');
+  }else{
+    img.setAttribute('src', imgSrc);
+  }
+  
+  
 
   var div = document.createElement('div');
   div.setAttribute('id', index);
   div.setAttribute('data-tab-id', index);
   div.setAttribute('data-window-id', windowId);
   div.setAttribute('class', 'tab_el')
-
+  
+  console.log(img);
+  div.appendChild(img);
   div.appendChild(listElement);
   return div;
 }
@@ -33,7 +44,7 @@ function fillTabList(queryInfo, callback){
   chrome.tabs.query(queryInfo, function (tabs){
     var list = document.getElementById('list');
     for (index in tabs){
-      list.appendChild(createListElement(strimString(tabs[index].title), index, tabs[index].windowId));
+      list.appendChild(createListElement(strimString(tabs[index].title), index, tabs[index].windowId, tabs[index].favIconUrl));
     }
     callback();
     resetFocus(tabs.length);
@@ -114,10 +125,10 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
         if(foundTabs.length > 0){
             for(index in foundTabs){
                 console.log(index, tabs[index].title);
-                list.appendChild(createListElement(tabs[foundTabs[index]].title, foundTabs[index], tabs[index].windowId));
+                list.appendChild(createListElement(tabs[foundTabs[index]].title, foundTabs[index], tabs[index].windowId), tabs[index].favIconUrl);
             }
         }else {
-            list.appendChild(createListElement("No tabs found."), -1);
+            list.appendChild(createListElement("No tabs found."), -1, "");
         }
 
     });
