@@ -78,31 +78,26 @@ document.addEventListener('DOMContentLoaded', function(){
 
 document.addEventListener('keydown', function(e){
   var li = $('li');
+  var temp = $('.selected');
   // down
   if(e.which === 40){
-    console.log(liSelected.attr('id'));
-    $("#Tab"+liSelected.attr('id')).removeClass('selected');
-    var next = liSelected.next('li');
-
-    console.log(liSelected);
+    $('.selected').removeClass('selected');
+    var next = temp.next('div');
     if(next.length){
-    console.log("#Tab"+next.attr('id'));
-    console.log($("#Tab"+next.attr('id')));
-
-       $("#Tab"+next.attr('id')).addClass('selected');
+       $("#"+next.attr('id')).addClass('selected');
     }else {
        $("#Tab"+li.eq(0).attr('id')).addClass('selected');
     }
-    liSelected = next;
   }
   // up 
   else if(e.which === 38){
-    //document.getElementById(focusedTabId).className = "tab_el";
-    focusedTabId--;
-    if(focusedTabId < 0){
-      focusedTabId = tabListNum - 1;
+    $('.selected').removeClass('selected');
+    var next = temp.prev('div');
+    if(next.length){
+       $("#"+next.attr('id')).addClass('selected');
+    }else {
+       $("#Tab"+li.last().attr('id')).addClass('selected');
     }
-   // document.getElementById(focusedTabId).className = "selected tab_el";
   }
 });
 
