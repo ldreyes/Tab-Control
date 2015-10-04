@@ -127,7 +127,7 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
                 foundTabs.push(index);
             }
         }
-        resetFocus(foundTabs.length);
+        
 
         //Display the new list
         list = document.getElementById('list');
@@ -138,8 +138,8 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
                   {
                     title: tabs[foundTabs[index]].title,
                     index: foundTabs[index],
-                    windowId: tabs[index].windowId,
-                    imgSrc: tabs[index].favIconUrl
+                    windowId: tabs[foundTabs[index]].windowId,
+                    imgSrc: tabs[foundTabs[index]].favIconUrl
                   }));
             }
         }else {
@@ -147,6 +147,7 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
               title: "No tabs found."}
               ));
         }
+        resetFocus(foundTabs.length);
 
     });
 });
