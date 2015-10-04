@@ -21,7 +21,7 @@ function createListElement(id, info) {
 
   var img = document.createElement('img');
   if(info.imgSrc == undefined){
-    img.setAttribute('src', '/img/paper.jpg');
+    img.setAttribute('src', '/img/paper.png');
   }else{
     img.setAttribute('src', info.imgSrc);
   }
