@@ -1,6 +1,6 @@
 var tabListNum = 0;
-var focusedTabId = 0;
-var activeTabs;
+var liSelected = $('li').eq(0);
+
 function strimString(string, length){
   if(string.length > length) {
     return string.substring(0,length-1)+"...";
@@ -10,33 +10,30 @@ function strimString(string, length){
 
 function resetFocus(tabNum){
   tabListNum = tabNum;
-  focusedTabId = 0;
-  document.getElementById(focusedTabId).setAttribute('class','selected');
+  liSelected = $('li').eq(0);
+  $("#Tab"+liSelected.id).addClass("selected");
 }
 
-function createListElement( title, index, windowId, imgSrc) {
+function createListElement(id, info) {
   var listElement = document.createElement('li');
-  listElement.appendChild(document.createTextNode(strimString(title, 40)));
-  listElement.setAttribute('id', "Tab" + index);
+  listElement.appendChild(document.createTextNode(strimString(info.title, 40)));
+  listElement.setAttribute('id', id);
 
   var img = document.createElement('img');
-  if(imgSrc == undefined){
+  if(info.imgSrc == undefined){
     img.setAttribute('src', '/img/paper.jpg');
   }else{
-    img.setAttribute('src', imgSrc);
+    img.setAttribute('src', info.imgSrc);
   }
-  
-  
 
   var div = document.createElement('div');
-  div.setAttribute('id', index);
-  div.setAttribute('data-tab-id', index);
-  div.setAttribute('data-window-id', windowId);
+  div.setAttribute('id', "Tab" + id);
+  div.setAttribute('data-tab-id', info.index);
+  div.setAttribute('data-window-id', info.windowId);
   div.setAttribute('class', 'tab_el')
-  
-  console.log(img);
   div.appendChild(img);
   div.appendChild(listElement);
+
   return div;
 }
 
@@ -44,50 +41,70 @@ function fillTabList(queryInfo, callback){
   chrome.tabs.query(queryInfo, function (tabs){
     var list = document.getElementById('list');
     for (index in tabs){
-      list.appendChild(createListElement(strimString(tabs[index].title), index, tabs[index].windowId, tabs[index].favIconUrl));
+      list.appendChild(createListElement(index,
+        {
+          title: tabs[index].title,
+          index: tabs[index].index,
+          windowId: tabs[index].windowId,
+          imgSrc: tabs[index].favIconUrl
+        }));
     }
-    callback();
-    resetFocus(tabs.length);
+    callback(tabs.length);
   });
 }
 
-//========================= EVENT LISTENERS =====================================
-
-document.addEventListener('DOMContentLoaded', function(){
-  fillTabList({}, function(){
-    console.log("All tabs loaded");
-  });
-});
-
-document.addEventListener('keydown', function(e){
-  // down
-  if(e.which === 40){
-    document.getElementById(focusedTabId).setAttribute('class','tab_el');
-    focusedTabId++;
-    if(focusedTabId >= tabListNum){
-      focusedTabId = 0;
-    }
-    document.getElementById(focusedTabId).setAttribute('class','selected');
+function focusTab (id){
+  console.log(id);
+  var name = id;
+  if(id.indexOf("Tab") === -1){
+    name = "Tab"+id;
   }
-  // up 
-  else if(e.which === 38){
-    document.getElementById(focusedTabId).setAttribute('class','tab_el');
-    focusedTabId--;
-    if(focusedTabId < 0){
-      focusedTabId = tabListNum - 1;
-    }
-    document.getElementById(focusedTabId).setAttribute('class','selected');
-  }
-});
-
-//Navigates to the tab that the user clicks
-document.getElementById('list').addEventListener('click', function(event){
-  var list = document.getElementById(event.target.id.substring(3));
+  var list = document.getElementById(name);
   // TODO: do not call update if the target window is the same 
   chrome.windows.update(parseInt(list.getAttribute("data-window-id")), {'focused':true});
   chrome.tabs.highlight({ 
     'tabs' : parseInt(list.getAttribute("data-tab-id")),
     'windowId' :  parseInt(list.getAttribute("data-window-id"))});
+}
+//========================= EVENT LISTENERS =====================================
+
+document.addEventListener('DOMContentLoaded', function(){
+  fillTabList({}, function(tabLength){
+    console.log("All tabs loaded");
+    resetFocus(tabLength);
+  });
+});
+
+document.addEventListener('keydown', function(e){
+  var li = $('li');
+  // down
+  if(e.which === 40){
+    $("#Tab"+liSelected.attr('id')).removeClass('selected');
+    var next = liSelected.next('li');
+
+    console.log(liSelected);
+    console.log(next);
+    if(next.length){
+       $("#Tab"+next.attr('id')).addClass('selected');
+    }else {
+       $("#Tab"+li.eq(0).attr('id')).addClass('selected');
+    }
+    liSelected = next;
+  }
+  // up 
+  else if(e.which === 38){
+    //document.getElementById(focusedTabId).className = "tab_el";
+    focusedTabId--;
+    if(focusedTabId < 0){
+      focusedTabId = tabListNum - 1;
+    }
+   // document.getElementById(focusedTabId).className = "selected tab_el";
+  }
+});
+
+//Navigates to the tab that the user clicks
+document.getElementById('list').addEventListener('click', function(event){
+  focusTab(event.target.id);
 });
 
 
@@ -100,11 +117,7 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
     //enter key -> navigate to tab
     if(e.which === 13){
       console.log("enter");
-      var list = document.getElementById(focusedTabId);
-      chrome.windows.update(parseInt(list.getAttribute("data-window-id")), {'focused':true});
-      chrome.tabs.highlight({ 
-        'tabs' : parseInt(list.getAttribute("data-tab-id")),
-        'windowId' :  parseInt(list.getAttribute("data-window-id"))});
+      focusTab($('.selected').attr('id'));
       return;
     }
     var inBox = this;
@@ -117,15 +130,19 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
             }
         }
         resetFocus(foundTabs.length);
-        //console.log(foundTabs);
 
         //Display the new list
         list = document.getElementById('list');
         list.innerHTML = '';
         if(foundTabs.length > 0){
             for(index in foundTabs){
-                console.log(index, tabs[index].title);
-                list.appendChild(createListElement(tabs[foundTabs[index]].title, foundTabs[index], tabs[index].windowId), tabs[index].favIconUrl);
+                list.appendChild(createListElement(index,
+                  {
+                    title: tabs[foundTabs[index]].title,
+                    index: foundTabs[index].index,
+                    windowId: tabs[index].windowId,
+                    imgSrc: tabs[index].favIconUrl
+                  }));
             }
         }else {
             list.appendChild(createListElement("No tabs found."), -1, "");
