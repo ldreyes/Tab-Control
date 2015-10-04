@@ -11,7 +11,7 @@ function strimString(string, length){
 function resetFocus(tabNum){
   tabListNum = tabNum;
   liSelected = $('li').eq(0);
-  $("#Tab"+liSelected.id).addClass("selected");
+  $("#Tab"+liSelected.attr('id')).addClass("selected");
 }
 
 function createListElement(id, info) {
@@ -66,6 +66,7 @@ function focusTab (id){
     'tabs' : parseInt(list.getAttribute("data-tab-id")),
     'windowId' :  parseInt(list.getAttribute("data-window-id"))});
 }
+
 //========================= EVENT LISTENERS =====================================
 
 document.addEventListener('DOMContentLoaded', function(){
@@ -79,12 +80,15 @@ document.addEventListener('keydown', function(e){
   var li = $('li');
   // down
   if(e.which === 40){
+    console.log(liSelected.attr('id'));
     $("#Tab"+liSelected.attr('id')).removeClass('selected');
     var next = liSelected.next('li');
 
     console.log(liSelected);
-    console.log(next);
     if(next.length){
+    console.log("#Tab"+next.attr('id'));
+    console.log($("#Tab"+next.attr('id')));
+
        $("#Tab"+next.attr('id')).addClass('selected');
     }else {
        $("#Tab"+li.eq(0).attr('id')).addClass('selected');
@@ -145,7 +149,9 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
                   }));
             }
         }else {
-            list.appendChild(createListElement("No tabs found."), -1, "");
+            list.appendChild(createListElement(-1, {
+              title: "No tabs found."}
+              ));
         }
 
     });
