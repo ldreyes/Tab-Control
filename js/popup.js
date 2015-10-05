@@ -67,7 +67,7 @@ function focusTab (id){
 }
 
 //========================= EVENT LISTENERS =====================================
-
+//Fills the initial tab list and sets the highlight to the first tab
 document.addEventListener('DOMContentLoaded', function(){
   fillTabList({}, function(tabLength){
     console.log("All tabs loaded");
@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 });
 
+//Allows iteration with up and down keys
 document.addEventListener('keydown', function(e){
   var li = $('li');
   var temp = $('.selected');
@@ -123,7 +124,9 @@ document.getElementById('searchInput').addEventListener('keyup', function(e){
         //Search for the tab indexes given the text
         var foundTabs = [];
         for(index in tabs){
-            if( tabs[index].title.toLowerCase().indexOf(inBox.value.toLowerCase()) != -1 ){
+            //Matches the tab title or url
+            if( tabs[index].title.toLowerCase().indexOf(inBox.value.toLowerCase()) != -1 ||
+                tabs[index].url.toLowerCase().indexOf(inBox.value.toLowerCase()) != -1){
                 foundTabs.push(index);
             }
         }
