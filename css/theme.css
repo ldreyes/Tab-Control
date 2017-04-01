@@ -47,15 +47,13 @@ div.tab_el:hover {
 }
 
 #search {
-    box-shadow: 0 2px 2px -2px #000000;
-	padding: 15px;
-	background-color: #3366FF;
+	padding: 10px;
 } 
 
 #searchInput {
 	width: 100%;
 	display: table-cell;
-	border-radius: 10px;
+	border-radius: 2px;
 	outline: none;
 	padding: 5px;
 }
