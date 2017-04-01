@@ -53,7 +53,7 @@ div.tab_el:hover {
 #searchInput {
 	width: 100%;
 	display: table-cell;
-	border-radius: 2px;
+	border-radius: 5px;
 	outline: none;
 	padding: 5px;
 }
